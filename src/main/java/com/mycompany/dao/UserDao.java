@@ -1,6 +1,8 @@
 package com.mycompany.dao;
 
 import com.mycompany.entity.User;
+import com.mycompany.models.UserModel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

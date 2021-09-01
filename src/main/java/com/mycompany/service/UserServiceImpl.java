@@ -10,17 +10,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
-public class UserService {
+@Transactional
+public class UserServiceImpl implements Serializable {
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder encoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -28,7 +29,8 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    @Transactional
+
+
     public void save(UserModel userModel){
         User user = new User();
         user.setUsername(userModel.getUsername());
@@ -37,7 +39,7 @@ public class UserService {
         userDao.persist(user);
     }
 
-
+    @Transactional
     public List<UserModel> getUserModels() {
         List<UserModel> userModelList = new ArrayList<UserModel>();
         List<User> userList = userDao.findAll();
@@ -49,4 +51,19 @@ public class UserService {
         }
         return userModelList;
     }
+
+    public List<UserModel> getUserLoginParam() {
+        List<UserModel> userModelList = new ArrayList<UserModel>();
+        List<User> userList = userDao.findAll();
+        for (User user: userList) {
+            UserModel userModel = new UserModel();
+            userModel.setId(user.getId());
+            userModel.setUsername(user.getUsername());
+            userModel.setPassword(passwordEncoder.encode(user.getPassword()));
+            userModelList.add(userModel);
+        }
+        return userModelList;
+
+    }
+
 }

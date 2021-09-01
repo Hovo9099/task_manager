@@ -1,6 +1,7 @@
 package com.mycompany.dao;
 
 import com.mycompany.entity.User;
+import com.mycompany.models.UserModel;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -48,4 +49,5 @@ public class UserDaoImpl implements UserDao{
             delete(entity);
         }
     }
+
 }

@@ -2,7 +2,7 @@ package com.mycompany.pages;
 
 import com.mycompany.entity.enums.Role;
 import com.mycompany.models.UserModel;
-import com.mycompany.service.UserService;
+import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -20,7 +20,7 @@ import java.util.List;
 public class RegistrationPage extends WebPage {
 
     @SpringBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private Form form;
     private WebMarkupContainer divContainer;
@@ -57,11 +57,11 @@ public class RegistrationPage extends WebPage {
                 userModel.setUsername(username.getModelObject());
                 userModel.setPassword(password.getModelObject());
                 userModel.setRole(selectRole.getModelObject());
-                userService.save(userModel);
+                userServiceImpl.save(userModel);
                 if (selectRole.getModelObject() == Role.MANAGER)
                     setResponsePage(ManagerPage.class);
                 else
-                    setResponsePage(EmployeePage.class);
+                    setResponsePage(LoginPage.class);
             }
         };
         ajaxSubmitLink.setOutputMarkupId(true);

@@ -1,10 +1,9 @@
 package com.mycompany.pages;
 
-import com.mycompany.dao.UserDao;
 import com.mycompany.models.UserModel;
-import com.mycompany.service.UserService;
+import com.mycompany.service.TaskServiceImpl;
+import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -17,10 +16,14 @@ import java.util.List;
 
 public class LoginPage extends WebPage {
 
+    @SpringBean
+    private UserServiceImpl userService;
+
     private Form form;
     private WebMarkupContainer divContainer;
     private TextField<Object> username;
     private TextField<Object> password;
+    private List<UserModel> userModels;
 
     public LoginPage() {
         form = new Form("formId");
@@ -40,7 +43,12 @@ public class LoginPage extends WebPage {
         AjaxSubmitLink ajaxSubmitLink = new AjaxSubmitLink("buttonId") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
+                userModels = userService.getUserModels();
+                for (UserModel userModel : userModels) {
+                    if (username.getModelObject().equals(userModel.getUsername()) && password.getModelObject().equals(userModel.getPassword())) {
 
+                    }
+                }
             }
         };
         ajaxSubmitLink.setOutputMarkupId(true);

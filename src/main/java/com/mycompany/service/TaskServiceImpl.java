@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
-@Transactional(readOnly = true)
-public class TaskService {
+@Transactional
+public class TaskServiceImpl implements Serializable {
 
     @Autowired
     private TaskDao taskDao;
@@ -20,7 +24,8 @@ public class TaskService {
     @Autowired
     private UserDao userDao;
 
-    @Transactional
+
+
     public void save(TaskModel taskModel) {
         Task task = new Task();
         task.setName(taskModel.getName());
@@ -30,7 +35,38 @@ public class TaskService {
         taskDao.persist(task);
     }
 
-    private User getUserEntity(UserModel userModel) {
+
+
+    @Transactional
+    public List<TaskModel> getTaskModelList() {
+
+        List<Task> taskEntityList = taskDao.findAll();
+        List<TaskModel> taskModels = new ArrayList<>();
+//        taskModelList = taskDao.findAll();
+        for (Task item : taskEntityList) {
+            TaskModel taskModel = new TaskModel();
+            UserModel userModel = new UserModel();
+
+            User user = item.getUser();
+            userModel.setUsername(user.getUsername());
+
+            taskModel.setId(item.getId());
+            taskModel.setName(item.getName());
+            taskModel.setDescription(item.getDescription());
+            taskModel.setUserModel(userModel);
+            taskModels.add(taskModel);
+        }
+        return taskModels;
+    }
+
+    @Transactional
+    public void deleteTask(Integer id) {
+        taskDao.delete(taskDao.findById(id));
+    }
+
+
+
+    public User getUserEntity(UserModel userModel) {
         User user;
 
         if (userModel.getId() != null) {
