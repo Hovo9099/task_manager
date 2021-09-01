@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form wicket:id="formId">
+    <div wicket:id="divId">
+        <span>Task Status:</span>
+        <select wicket:id="taskStatusSelect">
+            <option selected="selected" value="">Choose one</option>
+            <option>New Task</option>
+            <option>Bug</option>
+            <option>In process</option>
+            <option>ReOpen</option>
+            <option>Resolved</option>
+            <option>Done</option>
+        </select>
+
+        <span>Task Creation Date:</span>
+        <select wicket:id="dateSelect">
+            <option selected="selected" value="">Choose one</option>
+        </select>
+        <input wicket:id="filterButton" type="submit" value="filter"/>
+    </div>
+</form>
+</body>
+</html>

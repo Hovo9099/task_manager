@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <wicket:panel>
+        <form wicket:id="formId">
+            <div wicket:id="divId">
+                <label>Name</label>
+                <input wicket:id="name" type="text"/><br/>
+                <label>Description</label>
+                <input wicket:id="description" type="text"/><br/>
+                <label>User</label>
+                <select wicket:id="user"></select>
+                <input type="submit" wicket:id="button" value="Save"/>
+            </div>
+        </form>
+
+    </wicket:panel>
+    <span wicket:id="modalWindow"></span>
+
+
+</body>
+</html>
