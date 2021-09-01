@@ -13,7 +13,7 @@
                     update
                 </prop>
                 <prop key="hibernate.dialect">
-                    org.hibernate.dialect.PostgreSQL95Dialect
+                    org.hibernate.dialect.MySQL55Dialect
                 </prop>
                 <prop key="show_sql">
                     true

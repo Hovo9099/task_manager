@@ -20,7 +20,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.util.List;
 
-public class ManagerPanel extends Panel {
+public abstract class ManagerPanel extends Panel {
 
     @SpringBean
     private TaskService taskService;
@@ -80,7 +80,7 @@ public class ManagerPanel extends Panel {
                 taskModel.setUserModel(selectedModel);
                 taskService.save(taskModel);
                 onClose(target);
-
+                refreshManagerPage(target);
             }
         };
 
@@ -94,4 +94,6 @@ public class ManagerPanel extends Panel {
         modalWindow.close(target);
         add(modalWindow);
     }
+
+    public abstract void refreshManagerPage(AjaxRequestTarget target);
 }

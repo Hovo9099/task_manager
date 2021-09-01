@@ -81,7 +81,12 @@ public class ManagerPage extends WebPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 if(!modalWindow.isShown()){
-                    modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()));
+                    modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()) {
+                        @Override
+                        public void refreshManagerPage(AjaxRequestTarget target) {
+                           initializeListView(target, getTaskModelList());
+                        }
+                    });
                     modalWindow.show(target);
                 }
             }
@@ -142,7 +147,12 @@ public class ManagerPage extends WebPage {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         if(!modalWindow.isShown()){
-                            modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()));
+                            modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()) {
+                                @Override
+                                public void refreshManagerPage(AjaxRequestTarget target) {
+                                    //TODO check
+                                }
+                            });
                             modalWindow.show(ajaxRequestTarget);
                         }
                     }
@@ -161,6 +171,7 @@ public class ManagerPage extends WebPage {
             }
 
         };
+        listView.setOutputMarkupPlaceholderTag(true);
         addOrReplace(listView);
 
         if (target != null) {
