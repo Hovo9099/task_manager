@@ -18,11 +18,6 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements Serializable {
 
-//    @Bean
-//    public PasswordEncoder encoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -52,18 +47,12 @@ public class UserServiceImpl implements Serializable {
         return userModelList;
     }
 
-    public List<UserModel> getUserLoginParam() {
-        List<UserModel> userModelList = new ArrayList<UserModel>();
-        List<User> userList = userDao.findAll();
-        for (User user: userList) {
-            UserModel userModel = new UserModel();
-            userModel.setId(user.getId());
-            userModel.setUsername(user.getUsername());
-            userModel.setPassword(passwordEncoder.encode(user.getPassword()));
-            userModelList.add(userModel);
+    public Boolean getUserLogin(String username, String password) {
+        User user = userDao.getByUser(username);
+        if (user != null) {
+            return passwordEncoder.matches(password, user.getPassword());
         }
-        return userModelList;
-
+        return false;
     }
 
 }

@@ -16,12 +16,5 @@ public class HomePage extends WebPage {
             }
         };
         add(signUp);
-        AjaxLink<Object> register = new AjaxLink<Object>("buttonRegId") {
-            @Override
-            public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                setResponsePage(RegistrationPage.class);
-            }
-        };
-        add(register);
     }
 }

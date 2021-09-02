@@ -7,5 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface UserDao extends CustomDao<User> {
-
+    User getByUser(String username);
 }

@@ -1,6 +1,5 @@
 package com.mycompany.pages;
 
-import com.mycompany.dao.TaskDao;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
@@ -32,9 +31,6 @@ public class ManagerPage extends WebPage {
 
     @SpringBean
     TaskServiceImpl taskServiceImpl;
-
-    @SpringBean
-    private TaskDao taskDao;
 
     private Form form;
     private WebMarkupContainer divContainer;
