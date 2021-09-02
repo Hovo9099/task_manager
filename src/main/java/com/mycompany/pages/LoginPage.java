@@ -1,6 +1,7 @@
 package com.mycompany.pages;
 
 import com.mycompany.models.UserModel;
+import com.mycompany.service.UserService;
 import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -18,7 +19,7 @@ import java.util.List;
 public class LoginPage extends WebPage {
 
     @SpringBean
-    private UserServiceImpl userService;
+    private UserService userService;
 
     private Form form;
     private WebMarkupContainer divContainer;
@@ -64,23 +65,14 @@ public class LoginPage extends WebPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 if (userService.getUserLogin(username, password) == true) {
-                    setResponsePage(ManagerPage.class);
+                        setResponsePage(ManagerPage.class);
                 } else {
-
+                    //TODO
                 }
             }
         };
         ajaxSubmitLink.setOutputMarkupId(true);
         divContainer.add(ajaxSubmitLink);
-
-        AjaxSubmitLink ajaxSubmitLink1 = new AjaxSubmitLink("registerButton") {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                setResponsePage(RegistrationPage.class);
-            }
-        };
-        ajaxSubmitLink1.setOutputMarkupId(true);
-        divContainer.add(ajaxSubmitLink1);
         form.add(divContainer);
         add(form);
     }

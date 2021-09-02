@@ -3,7 +3,9 @@ package com.mycompany.panel;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
+import com.mycompany.service.TaskService;
 import com.mycompany.service.TaskServiceImpl;
+import com.mycompany.service.UserService;
 import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -16,15 +18,16 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 public abstract class ManagerPanel extends Panel {
 
     @SpringBean
-    private TaskServiceImpl taskServiceImpl;
+    private TaskService taskService;
 
     @SpringBean
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     private Form form;
     private WebMarkupContainer divContainer;
@@ -50,7 +53,7 @@ public abstract class ManagerPanel extends Panel {
         description = new TextArea<String>("description", Model.of(""));
         description.setOutputMarkupId(true);
         divContainer.add(description);
-        userSelect = new DropDownChoice<UserModel>("user", new Model<UserModel>(), userServiceImpl.getUserModels(), new IChoiceRenderer<UserModel>() {
+        userSelect = new DropDownChoice<UserModel>("user", new Model<UserModel>(), userService.getUserModels(), new IChoiceRenderer<UserModel>() {
             @Override
             public Object getDisplayValue(UserModel userModel) {
                 return userModel.getUsername();
@@ -74,7 +77,7 @@ public abstract class ManagerPanel extends Panel {
                 taskModel.setDescription(description.getModelObject());
                 taskModel.setStatus(TaskStatus.NEW_TASK);
                 taskModel.setUserModel(selectedModel);
-                taskServiceImpl.save(taskModel);
+                taskService.save(taskModel);
                 onClose(target);
                 refreshManagerPage(target);
             }

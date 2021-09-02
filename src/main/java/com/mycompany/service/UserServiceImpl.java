@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl implements Serializable {
+public class UserServiceImpl implements UserService, Serializable {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements Serializable {
     private UserDao userDao;
 
 
-
+    @Override
     public void save(UserModel userModel){
         User user = new User();
         user.setUsername(userModel.getUsername());
@@ -35,6 +35,7 @@ public class UserServiceImpl implements Serializable {
     }
 
     @Transactional
+    @Override
     public List<UserModel> getUserModels() {
         List<UserModel> userModelList = new ArrayList<UserModel>();
         List<User> userList = userDao.findAll();
@@ -47,6 +48,7 @@ public class UserServiceImpl implements Serializable {
         return userModelList;
     }
 
+    @Override
     public Boolean getUserLogin(String username, String password) {
         User user = userDao.getByUser(username);
         if (user != null) {

@@ -4,7 +4,9 @@ import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
 import com.mycompany.panel.ManagerPanel;
+import com.mycompany.service.TaskService;
 import com.mycompany.service.TaskServiceImpl;
+import com.mycompany.service.UserService;
 import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -27,10 +29,10 @@ import java.util.List;
 public class ManagerPage extends WebPage {
 
     @SpringBean
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @SpringBean
-    TaskServiceImpl taskServiceImpl;
+    private TaskService taskService;
 
     private Form form;
     private WebMarkupContainer divContainer;
@@ -51,7 +53,7 @@ public class ManagerPage extends WebPage {
         divContainer = new WebMarkupContainer("divId", Model.of(""));
         divContainer.setOutputMarkupId(true);
         form.add(divContainer);
-        userSelect = new DropDownChoice<UserModel>("userSelect", new Model<UserModel>(),  userServiceImpl.getUserModels(), new IChoiceRenderer<UserModel>() {
+        userSelect = new DropDownChoice<UserModel>("userSelect", new Model<UserModel>(),  userService.getUserModels(), new IChoiceRenderer<UserModel>() {
             @Override
             public Object getDisplayValue(UserModel userModel) {
                 return userModel.getUsername();
@@ -85,7 +87,7 @@ public class ManagerPage extends WebPage {
                     modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()) {
                         @Override
                         public void refreshManagerPage(AjaxRequestTarget target) {
-                           initializeListView(target, taskServiceImpl.getTaskModelList());
+                           initializeListView(target, taskService.getTaskModelList());
                         }
                     });
                     modalWindow.show(target);
@@ -98,8 +100,18 @@ public class ManagerPage extends WebPage {
             }
         };
 
-        initializeListView(null, taskServiceImpl.getTaskModelList());
+        initializeListView(null, taskService.getTaskModelList());
         divContainer.add(createTaskBtn);
+
+        AjaxSubmitLink ajaxSubmitLink1 = new AjaxSubmitLink("registerButton") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                setResponsePage(RegistrationPage.class);
+            }
+        };
+
+        ajaxSubmitLink1.setOutputMarkupId(true);
+        divContainer.add(ajaxSubmitLink1);
         form.add(divContainer);
     }
 
@@ -142,8 +154,8 @@ public class ManagerPage extends WebPage {
                 listItem.add(new AjaxLink<Void>("deleteButton") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                      taskServiceImpl.deleteTask(taskModel.getId());
-                        List<TaskModel> temp = taskServiceImpl.getTaskModelList();
+                      taskService.deleteTask(taskModel.getId());
+                        List<TaskModel> temp = taskService.getTaskModelList();
                         temp.remove(taskModel);
                         initializeListView(target, temp);
                     }

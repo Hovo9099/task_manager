@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class TaskServiceImpl implements Serializable {
+public class TaskServiceImpl implements TaskService, Serializable {
 
     @Autowired
     private TaskDao taskDao;
@@ -25,7 +25,7 @@ public class TaskServiceImpl implements Serializable {
     private UserDao userDao;
 
 
-
+    @Override
     public void save(TaskModel taskModel) {
         Task task = new Task();
         task.setName(taskModel.getName());
@@ -38,6 +38,7 @@ public class TaskServiceImpl implements Serializable {
 
 
     @Transactional
+    @Override
     public List<TaskModel> getTaskModelList() {
 
         List<Task> taskEntityList = taskDao.findAll();
@@ -60,12 +61,13 @@ public class TaskServiceImpl implements Serializable {
     }
 
     @Transactional
+    @Override
     public void deleteTask(Integer id) {
         taskDao.delete(taskDao.findById(id));
     }
 
 
-
+    @Override
     public User getUserEntity(UserModel userModel) {
         User user;
 
