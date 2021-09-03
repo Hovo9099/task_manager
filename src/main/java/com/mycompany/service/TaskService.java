@@ -18,4 +18,6 @@ public interface TaskService {
     User getUserEntity(UserModel userModel);
 
     List<TaskModel> getTaskByUser(String username);
+
+    UserModel getUserModelToUser(User user);
 }

@@ -85,21 +85,26 @@ public class TaskServiceImpl implements TaskService, Serializable {
     }
 
     @Override
+    public UserModel getUserModelToUser(User user) {
+        UserModel userModel = new UserModel();
+        userModel.setUsername(user.getUsername());
+        return userModel;
+    }
+
+    @Override
     public List<TaskModel> getTaskByUser(String username) {
         List<Task> tasksList = taskDao.findAllTaskByUser(username);
-        UserModel userModel = new UserModel();
-        TaskModel taskModel = new TaskModel();
-        for (Task item: tasksList) {
-            User user = item.getUser();
-            userModel.setUsername(user.getUsername());
 
+        List<TaskModel> taskModelList = new ArrayList<>();
+        for (Task item: tasksList) {
+            TaskModel taskModel = new TaskModel();
             taskModel.setId(item.getId());
             taskModel.setName(item.getName());
             taskModel.setDescription(item.getDescription());
             taskModel.getStatus(item.getStatus());
-            taskModel.setUserModel(userModel);
-
+            taskModel.setUserModel(getUserModelToUser(item.getUser()));
+            taskModelList.add(taskModel);
         }
-        
+        return taskModelList;
     }
 }
