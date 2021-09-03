@@ -5,9 +5,7 @@ import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
 import com.mycompany.panel.ManagerPanel;
 import com.mycompany.service.TaskService;
-import com.mycompany.service.TaskServiceImpl;
 import com.mycompany.service.UserService;
-import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -132,9 +130,10 @@ public class ManagerPage extends WebPage {
             @Override
             protected void populateItem(ListItem<TaskModel> listItem) {
                 TaskModel taskModel = (TaskModel) listItem.getModelObject();
-                listItem.add(new Label("l_name", taskModel.getName()));
-                listItem.add(new Label("l_description", taskModel.getDescription()));
-                listItem.add(new Label("l_user", taskModel.getUserModel().getUsername()));
+                listItem.add(new Label("name", taskModel.getName()));
+                listItem.add(new Label("description", taskModel.getDescription()));
+                listItem.add(new Label("status", taskModel.getStatus(item.getStatus()).getName()));
+                listItem.add(new Label("user", taskModel.getUserModel().getUsername()));
 
                 listItem.add(new AjaxLink<Void>("editButton") {
                     @Override

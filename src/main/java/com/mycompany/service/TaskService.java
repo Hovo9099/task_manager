@@ -1,5 +1,6 @@
 package com.mycompany.service;
 
+import com.mycompany.entity.Task;
 import com.mycompany.entity.User;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
@@ -15,4 +16,6 @@ public interface TaskService {
     void deleteTask(Integer id);
 
     User getUserEntity(UserModel userModel);
+
+    List<TaskModel> getTaskByUser(String username);
 }

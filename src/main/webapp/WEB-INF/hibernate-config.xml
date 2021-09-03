@@ -15,7 +15,10 @@
                 <prop key="hibernate.dialect">
                     org.hibernate.dialect.MySQL55Dialect
                 </prop>
-                <prop key="show_sql">
+                <prop key="hibernate.show_sql">
+                    true
+                </prop>
+                <prop key="hibernate.format_sql">
                     true
                 </prop>
             </props>

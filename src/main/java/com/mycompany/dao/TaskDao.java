@@ -11,4 +11,7 @@ public interface TaskDao extends CustomDao<Task> {
     @Transactional
     List<Task> findAllByUser(Integer currentUserId);
 
+    @Transactional
+    List<Task> findAllTaskByUser(String username);
+
 }

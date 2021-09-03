@@ -124,11 +124,11 @@
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - SLF4J-SIMPLE -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.slf4j</groupId>-->
+<!--			<artifactId>slf4j-simple</artifactId>-->
+<!--			<version>${slf4j.version}</version>-->
+<!--		</dependency>-->
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>

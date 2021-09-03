@@ -9,12 +9,6 @@ import org.apache.wicket.markup.html.WebPage;
 public class HomePage extends WebPage {
 
     public HomePage() {
-        AjaxLink<Object> signUp = new AjaxLink<Object>("buttonLogId") {
-            @Override
-            public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                setResponsePage(LoginPage.class);
-            }
-        };
-        add(signUp);
+        setResponsePage(LoginPage.class);
     }
 }

@@ -1,6 +1,5 @@
 package com.mycompany.models;
 
-import com.mycompany.entity.User;
 import com.mycompany.entity.enums.TaskStatus;
 
 import java.io.Serializable;
@@ -55,8 +54,8 @@ public class TaskModel implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public TaskStatus getStatus() {
-        return status;
+    public TaskStatus getStatus(TaskStatus status) {
+        return this.status;
     }
 
     public void setStatus(TaskStatus status) {

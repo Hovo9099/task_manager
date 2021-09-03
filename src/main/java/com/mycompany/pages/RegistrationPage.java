@@ -59,10 +59,7 @@ public class RegistrationPage extends WebPage {
                 userModel.setPassword(password.getModelObject());
                 userModel.setRole(selectRole.getModelObject());
                 userService.save(userModel);
-                if (selectRole.getModelObject() == Role.MANAGER)
-                    setResponsePage(ManagerPage.class);
-                else
-                    setResponsePage(LoginPage.class);
+                setResponsePage(ManagerPage.class);
             }
         };
         ajaxSubmitLink.setOutputMarkupId(true);

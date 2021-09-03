@@ -30,7 +30,7 @@ public class TaskServiceImpl implements TaskService, Serializable {
         Task task = new Task();
         task.setName(taskModel.getName());
         task.setDescription(taskModel.getDescription());
-        task.setStatus(taskModel.getStatus());
+        task.setStatus(taskModel.getStatus(item.getStatus()));
         task.setUser(getUserEntity(taskModel.getUserModel()));
         taskDao.persist(task);
     }
@@ -54,11 +54,14 @@ public class TaskServiceImpl implements TaskService, Serializable {
             taskModel.setId(item.getId());
             taskModel.setName(item.getName());
             taskModel.setDescription(item.getDescription());
+            taskModel.setStatus(item.getStatus());
             taskModel.setUserModel(userModel);
             taskModels.add(taskModel);
         }
         return taskModels;
     }
+
+
 
     @Transactional
     @Override
@@ -79,5 +82,24 @@ public class TaskServiceImpl implements TaskService, Serializable {
             user.setUsername(userModel.getUsername());
         }
         return user;
+    }
+
+    @Override
+    public List<TaskModel> getTaskByUser(String username) {
+        List<Task> tasksList = taskDao.findAllTaskByUser(username);
+        UserModel userModel = new UserModel();
+        TaskModel taskModel = new TaskModel();
+        for (Task item: tasksList) {
+            User user = item.getUser();
+            userModel.setUsername(user.getUsername());
+
+            taskModel.setId(item.getId());
+            taskModel.setName(item.getName());
+            taskModel.setDescription(item.getDescription());
+            taskModel.getStatus(item.getStatus());
+            taskModel.setUserModel(userModel);
+
+        }
+        
     }
 }
