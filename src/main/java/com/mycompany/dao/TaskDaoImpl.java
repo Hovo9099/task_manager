@@ -55,7 +55,7 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public List<Task> findAllTaskByUser(String username) {
-        List<Task> tasks = (List<Task>) sessionFactory.getCurrentSession().createQuery("from Task t where t.user = :username").setParameter("username", username).list();
+        List<Task> tasks = (List<Task>) sessionFactory.getCurrentSession().createQuery("from Task t where t.user.username = :username").setParameter("username", username).list();
         return tasks;
     }
 

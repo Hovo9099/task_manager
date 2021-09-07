@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService, Serializable {
         User user = new User();
         user.setUsername(userModel.getUsername());
         user.setPassword(passwordEncoder.encode(userModel.getPassword()));
-        user.setRoles(userModel.getRole());
+        user.setRole(userModel.getRole());
         userDao.persist(user);
     }
 

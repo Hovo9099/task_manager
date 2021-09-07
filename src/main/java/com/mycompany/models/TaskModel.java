@@ -54,7 +54,7 @@ public class TaskModel implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public TaskStatus getStatus(TaskStatus status) {
+    public TaskStatus getStatus() {
         return this.status;
     }
 

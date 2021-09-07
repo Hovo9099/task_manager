@@ -132,7 +132,7 @@ public class ManagerPage extends WebPage {
                 TaskModel taskModel = (TaskModel) listItem.getModelObject();
                 listItem.add(new Label("name", taskModel.getName()));
                 listItem.add(new Label("description", taskModel.getDescription()));
-                listItem.add(new Label("status", taskModel.getStatus(item.getStatus()).getName()));
+                listItem.add(new Label("status", taskModel.getStatus().getName()));
                 listItem.add(new Label("user", taskModel.getUserModel().getUsername()));
 
                 listItem.add(new AjaxLink<Void>("editButton") {
@@ -156,7 +156,7 @@ public class ManagerPage extends WebPage {
                       taskService.deleteTask(taskModel.getId());
                         List<TaskModel> temp = taskService.getTaskModelList();
                         temp.remove(taskModel);
-                        initializeListView(target, temp);
+                        initializeListView(ajaxRequestTarget, temp);
                     }
                 });
             }

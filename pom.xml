@@ -116,6 +116,13 @@
 			<version>${wicket.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.wicket/wicket-auth-roles -->
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-auth-roles</artifactId>
+			<version>8.13.0</version>
+		</dependency>
+
 		<!-- OPTIONAL DEPENDENCY-->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
@@ -124,11 +131,13 @@
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - SLF4J-SIMPLE -->
-<!--		<dependency>-->
-<!--			<groupId>org.slf4j</groupId>-->
-<!--			<artifactId>slf4j-simple</artifactId>-->
-<!--			<version>${slf4j.version}</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
