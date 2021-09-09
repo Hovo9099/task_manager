@@ -24,16 +24,17 @@
             <input wicket:id="filterButton" type="submit" value="filter"/>
             <input wicket:id="createButton" type="submit" value="create task"/>
             <input type="submit" wicket:id="registerButton" value="Register Worker"/>
+            <input type="submit" wicket:id="logout" value="Log out"/>
         </div>
     </form>
     <h1>All Tasks</h1>
     <div wicket:id="listViewContainer">
         <div wicket:id="listView">
             <div>
-                Name <p wicket:id="name"></p>
-                Description <p wicket:id="description"></p>
-                Status <p wicket:id="status"></p>
-                User <p wicket:id="user"></p>
+                Name : <span  wicket:id="name"></span><br/>
+                Description : <span wicket:id="description"></span><br/>
+                Status : <span wicket:id="status"></span><br/>
+                User : <span wicket:id="user"></span><br/><br/>
                 <input wicket:id="editButton" type="submit" value="edit"/>
                 <input wicket:id="deleteButton" type="submit" value="delete"/>
                 <hr>

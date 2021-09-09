@@ -5,9 +5,11 @@ import com.mycompany.entity.User;
 import com.mycompany.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService, Serializable {
 
     @Autowired
@@ -34,7 +36,6 @@ public class UserServiceImpl implements UserService, Serializable {
         userDao.persist(user);
     }
 
-    @Transactional
     @Override
     public List<UserModel> getUserModels() {
         List<UserModel> userModelList = new ArrayList<UserModel>();

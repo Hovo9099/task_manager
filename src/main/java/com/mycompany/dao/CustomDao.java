@@ -19,5 +19,4 @@ public interface CustomDao<T> extends Serializable {
         public List<T> findAll();
 
         public void deleteAll();
-
 }

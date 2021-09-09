@@ -4,18 +4,21 @@ import com.mycompany.dao.TaskDao;
 import com.mycompany.dao.UserDao;
 import com.mycompany.entity.Task;
 import com.mycompany.entity.User;
+import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class TaskServiceImpl implements TaskService, Serializable {
 
     @Autowired
@@ -35,15 +38,11 @@ public class TaskServiceImpl implements TaskService, Serializable {
         taskDao.persist(task);
     }
 
-
-
-    @Transactional
     @Override
     public List<TaskModel> getTaskModelList() {
 
         List<Task> taskEntityList = taskDao.findAll();
         List<TaskModel> taskModels = new ArrayList<>();
-//        taskModelList = taskDao.findAll();
         for (Task item : taskEntityList) {
             TaskModel taskModel = new TaskModel();
             UserModel userModel = new UserModel();
@@ -62,8 +61,6 @@ public class TaskServiceImpl implements TaskService, Serializable {
     }
 
 
-
-    @Transactional
     @Override
     public void deleteTask(Integer id) {
         taskDao.delete(taskDao.findById(id));
@@ -92,11 +89,39 @@ public class TaskServiceImpl implements TaskService, Serializable {
     }
 
     @Override
-    public List<TaskModel> getTaskByUser(String username) {
-        List<Task> tasksList = taskDao.findAllTaskByUser(username);
+    public List<TaskModel> getAllTaskByUsersAndStatus(String username, TaskStatus status) {
+        List<Task> taskList = taskDao.getAllTaskByUsersAndStatus(username, status);
+        return changeEntityToModel(taskList);
+    }
 
+    @Override
+    public List<TaskModel> getTaskCreationDates() {
+        List<Task> taskList = taskDao.findAll();
         List<TaskModel> taskModelList = new ArrayList<>();
-        for (Task item: tasksList) {
+        for (Task item : taskList) {
+            TaskModel taskModel = new TaskModel();
+            taskModel.setId(item.getId());
+            taskModel.setCreationDate(item.getCreationDate());
+            taskModelList.add(taskModel);
+        }
+        return taskModelList;
+    }
+
+    @Override
+    public List<TaskModel> getAllTaskByStatusAndCreationDates(TaskStatus status, Date creationDate, String username) {
+        List<Task> taskList = taskDao.getAllTaskByStatusAndCreationDates(status, creationDate, username);
+        return changeEntityToModel(taskList);
+    }
+
+    @Override
+    public List<TaskModel> getTasksByUser(String username) {
+        List<Task> tasksList = taskDao.findAllTaskByUser(username);
+        return changeEntityToModel(tasksList);
+    }
+
+    private List<TaskModel> changeEntityToModel(List<Task> taskList) {
+        List<TaskModel> taskModelList = new ArrayList<>();
+        for (Task item: taskList) {
             TaskModel taskModel = new TaskModel();
             taskModel.setId(item.getId());
             taskModel.setName(item.getName());

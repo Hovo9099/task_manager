@@ -4,9 +4,7 @@ import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
 import com.mycompany.service.TaskService;
-import com.mycompany.service.TaskServiceImpl;
 import com.mycompany.service.UserService;
-import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -18,10 +16,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
-public abstract class   ManagerPanel extends Panel {
+public abstract class ManagerPanel extends Panel {
 
     @SpringBean
     private TaskService taskService;
@@ -33,13 +31,14 @@ public abstract class   ManagerPanel extends Panel {
     private WebMarkupContainer divContainer;
     private TextField<String> taskName;
     private TextArea<String> description;
-    private List<UserModel> userList;
     private DropDownChoice<UserModel> userSelect;
+    private DropDownChoice<TaskStatus> statusSelect;
     private ModalWindow modalWindow;
     private UserModel selectedModel;
+    private List<TaskStatus> taskStatusList;
 
 
-    public ManagerPanel(String id) {
+    public ManagerPanel(String id, Boolean isEdit) {
         super(id);
 
         form = new Form("formId");
@@ -53,6 +52,21 @@ public abstract class   ManagerPanel extends Panel {
         description = new TextArea<String>("description", Model.of(""));
         description.setOutputMarkupId(true);
         divContainer.add(description);
+
+        taskStatusList = Arrays.asList(TaskStatus.values());
+        statusSelect = new DropDownChoice<TaskStatus>("status", new Model<TaskStatus>(), taskStatusList, new IChoiceRenderer<TaskStatus>() {
+            @Override
+            public Object getDisplayValue(TaskStatus object) {
+                return object.getName();
+            }
+        });
+
+
+
+        statusSelect.setOutputMarkupId(true);
+        statusSelect.setVisible(isEdit);
+        divContainer.add(statusSelect);
+
         userSelect = new DropDownChoice<UserModel>("user", new Model<UserModel>(), userService.getUserModels(), new IChoiceRenderer<UserModel>() {
             @Override
             public Object getDisplayValue(UserModel userModel) {
@@ -69,6 +83,7 @@ public abstract class   ManagerPanel extends Panel {
 
         userSelect.setOutputMarkupId(true);
         divContainer.add(userSelect);
+
         AjaxSubmitLink ajaxSubmitLink = new AjaxSubmitLink("button") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {

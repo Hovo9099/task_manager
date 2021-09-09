@@ -7,8 +7,10 @@ import com.mycompany.panel.ManagerPanel;
 import com.mycompany.service.TaskService;
 import com.mycompany.service.UserService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -35,11 +37,13 @@ public class ManagerPage extends WebPage {
     private Form form;
     private WebMarkupContainer divContainer;
     private DropDownChoice<UserModel> userSelect;
-    private DropDownChoice<TaskModel> taskSelect;
+    private DropDownChoice<TaskModel> taskStatusSelect;
     private List<TaskStatus> statusList;
     private ModalWindow modalWindow;
     private ListView<TaskModel> listView;
     private WebMarkupContainer listViewContainer;
+    private TaskStatus selectedStatus;
+    private UserModel selectedUser;
 
     public ManagerPage() {
         listViewContainer = new WebMarkupContainer("listViewContainer");
@@ -58,20 +62,45 @@ public class ManagerPage extends WebPage {
             }
         });
         userSelect.setOutputMarkupId(true);
+
+        userSelect.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                selectedUser = (UserModel) getComponent().getDefaultModelObject();
+            }
+        });
+
         divContainer.add(userSelect);
         statusList = Arrays.asList(TaskStatus.values());
-        taskSelect  = new DropDownChoice("taskStatusSelect", new Model<TaskStatus>(), statusList, new IChoiceRenderer<TaskStatus>() {
+        taskStatusSelect = new DropDownChoice("taskStatusSelect", new Model<TaskStatus>(), statusList, new IChoiceRenderer<TaskStatus>() {
             @Override
             public Object getDisplayValue(TaskStatus taskStatus) {
                 return taskStatus.getName();
             }
         });
-        taskSelect.setOutputMarkupId(true);
-        divContainer.add(taskSelect);
+        taskStatusSelect.setOutputMarkupId(true);
+
+        taskStatusSelect.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                selectedStatus = (TaskStatus) getComponent().getDefaultModelObject();
+            }
+        });
+
+        divContainer.add(taskStatusSelect);
         initModalWindow();
+
+
+
         AjaxSubmitLink ajaxSubmitLink = new AjaxSubmitLink("filterButton") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
+                if (selectedUser != null && selectedStatus != null) {
+                    List<TaskModel> taskModelList = taskService.getAllTaskByUsersAndStatus(selectedUser.getUsername(), selectedStatus);
+                    initializeListView(target, taskModelList);
+                } else {
+                    target.appendJavaScript("alert('check user or status!!!')");
+                }
 
             }
         };
@@ -81,8 +110,8 @@ public class ManagerPage extends WebPage {
         AjaxSubmitLink createTaskBtn = new AjaxSubmitLink("createButton") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
-                if(!modalWindow.isShown()){
-                    modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()) {
+                if(!modalWindow.isShown()) {
+                    modalWindow.setContent(new ManagerPanel(modalWindow.getContentId(), false) {
                         @Override
                         public void refreshManagerPage(AjaxRequestTarget target) {
                            initializeListView(target, taskService.getTaskModelList());
@@ -101,18 +130,28 @@ public class ManagerPage extends WebPage {
         initializeListView(null, taskService.getTaskModelList());
         divContainer.add(createTaskBtn);
 
-        AjaxSubmitLink ajaxSubmitLink1 = new AjaxSubmitLink("registerButton") {
+        AjaxSubmitLink registerButton = new AjaxSubmitLink("registerButton") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 setResponsePage(RegistrationPage.class);
             }
         };
 
-        ajaxSubmitLink1.setOutputMarkupId(true);
-        divContainer.add(ajaxSubmitLink1);
+        registerButton.setOutputMarkupId(true);
+        divContainer.add(registerButton);
+
+        AjaxSubmitLink logout = new AjaxSubmitLink("logout") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                getSession().invalidate();
+                AuthenticatedWebSession.get().signOut();
+                setResponsePage(getApplication().getHomePage());
+            }
+        };
+        logout.setOutputMarkupId(true);
+        divContainer.add(logout);
         form.add(divContainer);
     }
-
 
     private void initModalWindow() {
         modalWindow = new ModalWindow("modalWindow");
@@ -125,11 +164,10 @@ public class ManagerPage extends WebPage {
 
     private void initializeListView(AjaxRequestTarget target, List<TaskModel> taskModelList) {
 
-
         listView = new ListView<TaskModel>("listView", taskModelList) {
             @Override
             protected void populateItem(ListItem<TaskModel> listItem) {
-                TaskModel taskModel = (TaskModel) listItem.getModelObject();
+                TaskModel taskModel = listItem.getModelObject();
                 listItem.add(new Label("name", taskModel.getName()));
                 listItem.add(new Label("description", taskModel.getDescription()));
                 listItem.add(new Label("status", taskModel.getStatus().getName()));
@@ -138,11 +176,11 @@ public class ManagerPage extends WebPage {
                 listItem.add(new AjaxLink<Void>("editButton") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                        if(!modalWindow.isShown()){
-                            modalWindow.setContent(new ManagerPanel(modalWindow.getContentId()) {
+                        if(!modalWindow.isShown()) {
+                            modalWindow.setContent(new ManagerPanel(modalWindow.getContentId(), true) {
                                 @Override
                                 public void refreshManagerPage(AjaxRequestTarget target) {
-                                    //TODO check
+
                                 }
                             });
                             modalWindow.show(ajaxRequestTarget);
@@ -170,6 +208,5 @@ public class ManagerPage extends WebPage {
         }
 
     }
-
 
 }

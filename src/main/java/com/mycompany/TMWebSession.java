@@ -10,7 +10,12 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+
+import java.security.Security;
 
 public class TMWebSession extends AuthenticatedWebSession {
 
@@ -51,8 +56,8 @@ public class TMWebSession extends AuthenticatedWebSession {
 
     @Override
     public void signOut() {
-        clear();
         super.signOut();
+        SecurityContextHolder.clearContext();
     }
 
     public static TMWebSession get(){

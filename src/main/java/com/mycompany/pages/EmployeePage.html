@@ -24,17 +24,22 @@
             <option selected="selected" value="">Choose one</option>
         </select>
         <input wicket:id="filterButton" type="submit" value="filter"/>
+        <input wicket:id="logout" type="submit" value="Log out">
     </div>
 </form>
+
 <h1>My Tasks</h1>
 <div wicket:id="listViewContainer">
     <div wicket:id="listView">
-        Name <p wicket:id="name"></p>
-        Description <p wicket:id="description"></p>
-        Status <p wicket:id="status"></p>
-        User <p wicket:id="user"></p>
-        <input wicket:id="editButton" type="submit" value="edit"/>
-        <hr>
+        <div>
+            Task : <span wicket:id="index"/><br>
+            Name : <span  wicket:id="name"></span><br/>
+            Description : <span wicket:id="description"></span><br/>
+            Status : <span wicket:id="status"></span><br/>
+            User : <span wicket:id="user"></span><br/><br/>
+            <input wicket:id="editButton" type="submit" value="edit"/>
+            <hr>
+        </div>
     </div>
 </div>
 <!--<div wicket:id="modalWindow"/>-->
