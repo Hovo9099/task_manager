@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TaskModel implements Serializable {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private Date creationDate;
@@ -14,11 +14,11 @@ public class TaskModel implements Serializable {
     private TaskStatus status;
     private UserModel userModel;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

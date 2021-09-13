@@ -2,9 +2,12 @@ package com.mycompany.entity;
 
 
 import com.mycompany.entity.enums.TaskStatus;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -13,7 +16,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private int id;
+    private Integer id;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "description")
@@ -33,11 +36,11 @@ public class Task {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private User user;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

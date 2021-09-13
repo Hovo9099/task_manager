@@ -1,9 +1,10 @@
 package com.mycompany.pages;
 
 import com.mycompany.TMWebSession;
-import com.mycompany.entity.Task;
+import com.mycompany.entity.enums.EditEnum;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
+import com.mycompany.panel.TaskEditPanel;
 import com.mycompany.service.TaskService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -21,10 +22,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.annotations.Target;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class EmployeePage extends WebPage {
@@ -45,6 +44,7 @@ public class EmployeePage extends WebPage {
     private TMWebSession session;
     private TaskStatus changeStatus;
     private TaskModel changeDate;
+
 
     public EmployeePage() {
         form = new Form("formId");
@@ -70,6 +70,7 @@ public class EmployeePage extends WebPage {
         divContainer.add(taskSelect);
 
         datesList = taskService.getTaskCreationDates();
+
         dateSelect = new DropDownChoice<TaskModel>("dateSelect", new Model<TaskModel>(), datesList, new IChoiceRenderer<TaskModel>() {
             @Override
             public Object getDisplayValue(TaskModel object) {
@@ -109,6 +110,7 @@ public class EmployeePage extends WebPage {
                 setResponsePage(getApplication().getHomePage());
             }
         };
+        initModalWindow();
         logout.setOutputMarkupId(true);
         divContainer.add(logout);
         form.add(divContainer);
@@ -125,25 +127,44 @@ public class EmployeePage extends WebPage {
         listView = new ListView<TaskModel>("listView", taskModelList) {
             @Override
             protected void populateItem(ListItem<TaskModel> item) {
+                int index = item.getIndex();
                 TaskModel taskModelItem = item.getModelObject();
-                item.add(new Label("index", item.getIndex() + 1));
+                item.add(new Label("index", item.getIndex()));
                 item.add(new Label("name", taskModelItem.getName()));
                 item.add(new Label("description", taskModelItem.getDescription()));
                 item.add(new Label("status", taskModelItem.getStatus().getName()));
                 item.add(new Label("user", taskModelItem.getUserModel().getUsername()));
-                item.add(new AjaxLink<Void>("editButton") {
+                AjaxLink<Void> editButton = new AjaxLink<Void>("editButton") {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-
+                        if(!modalWindow.isShown()) {
+                            modalWindow.setContent(new TaskEditPanel(modalWindow.getContentId(), taskModelItem, EditEnum.EDIT_EMPLOYEE) {
+                                @Override
+                                public void refreshManagerPage(AjaxRequestTarget target) {
+                                    initializeListView(target, taskService.getTasksByUser(session.getCurrentUser()));
+                                }
+                            });
+                            modalWindow.show(target);
+                        }
                     }
-                });
-
+                };
+                editButton.setOutputMarkupId(true);
+                item.add(editButton);
+                item.setOutputMarkupId(true).setMarkupId("row_" + index);
 
             }
         };
-        listView.setOutputMarkupPlaceholderTag(true);
+        listView.setOutputMarkupId(true);
         listViewContainer.addOrReplace(listView);
         add(listViewContainer);
 
+    }
+    private void initModalWindow() {
+        modalWindow = new ModalWindow("modalWindow");
+        modalWindow.showUnloadConfirmation(false);
+        modalWindow.setInitialWidth(1100);
+        modalWindow.setInitialHeight(600);
+        modalWindow.setResizable(true);
+        add(modalWindow);
     }
 }

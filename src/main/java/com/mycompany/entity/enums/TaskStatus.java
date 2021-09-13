@@ -1,5 +1,8 @@
 package com.mycompany.entity.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum TaskStatus {
     NEW_TASK(1, "New task"),
     BUG(2, "Bug"),
@@ -23,4 +26,10 @@ public enum TaskStatus {
     public String getName() {
         return name;
     }
+
+    public static List<TaskStatus> getEmployeeStatuses() {
+        List<TaskStatus> taskStatusList = Arrays.asList(IN_PROCESS, RESOLVED);
+        return taskStatusList;
+    }
+
 }

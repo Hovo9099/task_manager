@@ -8,13 +8,10 @@
     <wicket:panel>
         <form wicket:id="formId">
             <div wicket:id="divId">
-                <label>Name</label>
-                <input wicket:id="name" type="text"/><br/>
-                <label>Description</label>
-                <input wicket:id="description" type="text"/><br/>
-                <label>Status</label>
+
+                <input wicket:id="name" type="text" placeholder="Name"/><br/>
+                <input wicket:id="description" type="text" placeholder="Description"/><br/>
                 <select wicket:id="status"></select><br/>
-                <label>User</label>
                 <select wicket:id="user"></select>
                 <input type="submit" wicket:id="button" value="Save"/>
             </div>

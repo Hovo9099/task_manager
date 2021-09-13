@@ -1,7 +1,10 @@
 package com.mycompany;
 
 import com.mycompany.pages.LoginPage;
+import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;

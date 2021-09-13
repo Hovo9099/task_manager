@@ -1,8 +1,10 @@
 package com.mycompany.entity;
 
 import com.mycompany.entity.enums.Role;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

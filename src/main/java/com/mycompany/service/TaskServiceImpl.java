@@ -48,6 +48,7 @@ public class TaskServiceImpl implements TaskService, Serializable {
             UserModel userModel = new UserModel();
 
             User user = item.getUser();
+            userModel.setId(user.getId());
             userModel.setUsername(user.getUsername());
 
             taskModel.setId(item.getId());
@@ -83,7 +84,9 @@ public class TaskServiceImpl implements TaskService, Serializable {
 
     @Override
     public UserModel getUserModelToUser(User user) {
+
         UserModel userModel = new UserModel();
+        userModel.setId(user.getId());
         userModel.setUsername(user.getUsername());
         return userModel;
     }
@@ -114,6 +117,17 @@ public class TaskServiceImpl implements TaskService, Serializable {
     }
 
     @Override
+    public void update(TaskModel taskModel) {
+        Task task = taskDao.findById(taskModel.getId());
+        task.setId(taskModel.getId());
+        task.setName(taskModel.getName());
+        task.setDescription(taskModel.getDescription());
+        task.setStatus(taskModel.getStatus());
+        task.setUser(getUserEntity(taskModel.getUserModel()));
+        taskDao.update(task);
+    }
+
+    @Override
     public List<TaskModel> getTasksByUser(String username) {
         List<Task> tasksList = taskDao.findAllTaskByUser(username);
         return changeEntityToModel(tasksList);
@@ -132,4 +146,6 @@ public class TaskServiceImpl implements TaskService, Serializable {
         }
         return taskModelList;
     }
+
+
 }

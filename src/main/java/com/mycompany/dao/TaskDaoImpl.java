@@ -18,7 +18,6 @@ public class TaskDaoImpl implements TaskDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-
     @Override
     public void persist(Task entity) {
         sessionFactory.getCurrentSession().save(entity);

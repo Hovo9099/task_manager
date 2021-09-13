@@ -5,6 +5,7 @@ import com.mycompany.entity.User;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
+import com.mycompany.pages.ManagerPage;
 
 import java.util.Date;
 import java.util.List;
@@ -29,4 +30,5 @@ public interface TaskService {
 
     List<TaskModel> getAllTaskByStatusAndCreationDates(TaskStatus status, Date creationDate, String username);
 
+    void update(TaskModel taskModel);
 }

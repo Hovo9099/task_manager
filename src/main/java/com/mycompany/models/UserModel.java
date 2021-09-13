@@ -3,6 +3,7 @@ package com.mycompany.models;
 import com.mycompany.entity.enums.Role;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class UserModel implements Serializable {
@@ -43,5 +44,18 @@ public class UserModel implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserModel userModel = (UserModel) o;
+        return Objects.equals(id, userModel.id) && Objects.equals(username, userModel.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 }

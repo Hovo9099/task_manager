@@ -1,9 +1,10 @@
 package com.mycompany.pages;
 
+import com.mycompany.entity.enums.EditEnum;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
-import com.mycompany.panel.ManagerPanel;
+import com.mycompany.panel.TaskEditPanel;
 import com.mycompany.service.TaskService;
 import com.mycompany.service.UserService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -50,8 +51,9 @@ public class ManagerPage extends WebPage {
         listViewContainer.setOutputMarkupPlaceholderTag(true);
         add(listViewContainer);
         form = new Form("formId");
-        add(form);
         form.setOutputMarkupId(true);
+        add(form);
+
         divContainer = new WebMarkupContainer("divId", Model.of(""));
         divContainer.setOutputMarkupId(true);
         form.add(divContainer);
@@ -111,7 +113,9 @@ public class ManagerPage extends WebPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 if(!modalWindow.isShown()) {
-                    modalWindow.setContent(new ManagerPanel(modalWindow.getContentId(), false) {
+                    TaskModel taskModel = new TaskModel();
+                    taskModel.setStatus(TaskStatus.NEW_TASK);
+                    modalWindow.setContent(new TaskEditPanel(modalWindow.getContentId(), taskModel,EditEnum.MANAGER_TASK_CREATION) {
                         @Override
                         public void refreshManagerPage(AjaxRequestTarget target) {
                            initializeListView(target, taskService.getTaskModelList());
@@ -143,8 +147,8 @@ public class ManagerPage extends WebPage {
         AjaxSubmitLink logout = new AjaxSubmitLink("logout") {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
-                getSession().invalidate();
                 AuthenticatedWebSession.get().signOut();
+                getSession().invalidate();
                 setResponsePage(getApplication().getHomePage());
             }
         };
@@ -167,40 +171,46 @@ public class ManagerPage extends WebPage {
         listView = new ListView<TaskModel>("listView", taskModelList) {
             @Override
             protected void populateItem(ListItem<TaskModel> listItem) {
-                TaskModel taskModel = listItem.getModelObject();
-                listItem.add(new Label("name", taskModel.getName()));
-                listItem.add(new Label("description", taskModel.getDescription()));
-                listItem.add(new Label("status", taskModel.getStatus().getName()));
-                listItem.add(new Label("user", taskModel.getUserModel().getUsername()));
+                int index = listItem.getIndex();
+                TaskModel currentTaskModel = listItem.getModelObject();
+                listItem.add(new Label("name", currentTaskModel.getName()));
+                listItem.add(new Label("description", currentTaskModel.getDescription()));
+                listItem.add(new Label("status", currentTaskModel.getStatus().getName()));
+                listItem.add(new Label("user", currentTaskModel.getUserModel().getUsername()));
 
-                listItem.add(new AjaxLink<Void>("editButton") {
+                AjaxLink editButton = new  AjaxLink<Void>("editButton") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         if(!modalWindow.isShown()) {
-                            modalWindow.setContent(new ManagerPanel(modalWindow.getContentId(), true) {
+                            modalWindow.setContent(new TaskEditPanel(modalWindow.getContentId(), currentTaskModel, EditEnum.MANAGER_TASK_EDIT) {
                                 @Override
                                 public void refreshManagerPage(AjaxRequestTarget target) {
-
+                                    initializeListView(target, taskService.getTaskModelList());
                                 }
                             });
                             modalWindow.show(ajaxRequestTarget);
                         }
                     }
-                });
+                };
+                editButton.setOutputMarkupId(true).setMarkupId("edit" + index);
+                listItem.add(editButton);
 
-                listItem.add(new AjaxLink<Void>("deleteButton") {
+               AjaxLink deleteButton = new AjaxLink<Void>("deleteButton") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                      taskService.deleteTask(taskModel.getId());
-                        List<TaskModel> temp = taskService.getTaskModelList();
-                        temp.remove(taskModel);
-                        initializeListView(ajaxRequestTarget, temp);
+                      taskService.deleteTask(currentTaskModel.getId());
+                      List<TaskModel> temp = taskService.getTaskModelList();
+                      temp.remove(currentTaskModel);
+                      initializeListView(ajaxRequestTarget, temp);
                     }
-                });
+                };
+               deleteButton.setOutputMarkupId(true);
+               listItem.setOutputMarkupId(true).setMarkupId("row_" + index);
+               listItem.add(deleteButton);
             }
-
         };
-        listView.setOutputMarkupPlaceholderTag(true);
+
+        listView.setOutputMarkupId(true);
         listViewContainer.addOrReplace(listView);
 
         if (target != null) {
