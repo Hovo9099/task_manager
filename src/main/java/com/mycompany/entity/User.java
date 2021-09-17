@@ -31,6 +31,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<Task> taskList = new ArrayList<Task>();
 
+    @Column(name = "has_resume", nullable = false, columnDefinition = "TINYINT", length = 1)
+    private Boolean hasResume = Boolean.FALSE;
 
     public Integer getId() {
         return id;
@@ -64,6 +66,13 @@ public class User {
         this.role = role;
     }
 
+    public Boolean getHasResume() {
+        return hasResume;
+    }
+
+    public void setHasResume(Boolean hasResume) {
+        this.hasResume = hasResume;
+    }
 
     public List<Task> getTaskList() {
         return taskList;

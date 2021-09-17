@@ -58,4 +58,24 @@ public class UserServiceImpl implements UserService, Serializable {
         return false;
     }
 
+    @Override
+    public UserModel getUserById(Integer id) {
+        User user = userDao.findById(id);
+        UserModel userModel = new UserModel();
+
+        userModel.setId(user.getId());
+        userModel.setUsername(user.getUsername());
+
+        return userModel;
+    }
+
+    @Override
+    public void saveHasResume(UserModel userModel) {
+        User user = userDao.findById(userModel.getId());
+        user.setHasResume(userModel.getHasResume());
+        userDao.update(user);
+    }
+
+
+
 }

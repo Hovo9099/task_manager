@@ -24,8 +24,18 @@
             <option selected="selected" value="">Choose one</option>
         </select>
         <input wicket:id="filterButton" type="submit" value="filter"/>
-        <input wicket:id="logout" type="submit" value="Log out">
+        <input wicket:id="createTaskBtn" type="submit" value="Create task"/>
+
+        <input wicket:id="logout" type="submit" value="Log out"/>
     </div>
+
+</form>
+
+<div wicket:id="feedback"></div>
+<form wicket:id="formUpload">
+    <label>Select file :</label>
+    <input wicket:id="fileUpload" type="file" accept="application/pdf"/>
+    <input type="submit" wicket:id="uploadBtn" value="Upload"/>
 </form>
 
 <h1>My Tasks</h1>
@@ -42,6 +52,7 @@
         </div>
     </div>
 </div>
+
 <div wicket:id="modalWindow"/>
 </body>
 </html>

@@ -7,6 +7,7 @@ import com.mycompany.models.UserModel;
 import com.mycompany.panel.TaskEditPanel;
 import com.mycompany.service.TaskService;
 import com.mycompany.service.UserService;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -22,10 +23,22 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.ByteArrayResource;
+import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import static org.apache.wicket.ThreadContext.getApplication;
 
 public class ManagerPage extends WebPage {
 
@@ -45,6 +58,7 @@ public class ManagerPage extends WebPage {
     private WebMarkupContainer listViewContainer;
     private TaskStatus selectedStatus;
     private UserModel selectedUser;
+    private WebMarkupContainer iFrame;
 
     public ManagerPage() {
         listViewContainer = new WebMarkupContainer("listViewContainer");
@@ -155,6 +169,11 @@ public class ManagerPage extends WebPage {
         logout.setOutputMarkupId(true);
         divContainer.add(logout);
         form.add(divContainer);
+
+        Path path = Paths.get("C:", "data", "2", "application/pdf");
+
+        readDocument(null, path.toString());
+
     }
 
     private void initModalWindow() {
@@ -164,6 +183,7 @@ public class ManagerPage extends WebPage {
         modalWindow.setInitialHeight(600);
         modalWindow.setResizable(true);
         add(modalWindow);
+
     }
 
     private void initializeListView(AjaxRequestTarget target, List<TaskModel> taskModelList) {
@@ -219,4 +239,37 @@ public class ManagerPage extends WebPage {
 
     }
 
+    public void readDocument(AjaxRequestTarget target, String filePath) {
+        File headingFile = new File(filePath);
+
+        ResourceReference resourceReference = new ResourceReference(this.getClass(), "pdf-reader-resource") {
+
+            private static final long serialVersionUID = -6494747414399398897L;
+
+            @Override
+            public IResource getResource() {
+
+                byte[] byteArray = null;
+                try {
+                    byteArray = Files.readAllBytes(headingFile.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                };
+
+                return new ByteArrayResource("application/pdf", byteArray);
+            }
+
+        };
+
+        if (resourceReference.canBeRegistered()) {
+            getApplication().getResourceReferenceRegistry().registerResourceReference(resourceReference);
+        }
+
+        WebMarkupContainer iFrame = new WebMarkupContainer("iFrame");
+
+        String urlForResourceReference = ((String) urlFor(resourceReference, null)).concat("?nocache=" + UUID.randomUUID().toString());
+
+        iFrame.add(new AttributeModifier("src", urlForResourceReference) );
+        add(iFrame);
+    }
 }

@@ -1,22 +1,19 @@
 package com.mycompany.pages;
 
 import com.mycompany.TMWebSession;
-import com.mycompany.entity.User;
 import com.mycompany.entity.enums.Role;
 import com.mycompany.models.UserModel;
 import com.mycompany.service.UserService;
-import com.mycompany.service.UserServiceImpl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.Request;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.util.List;
@@ -36,7 +33,7 @@ public class LoginPage extends WebPage {
     private String password;
 
 
-    public LoginPage() {
+    public LoginPage(PageParameters params) {
         form = new Form("formId");
         form.setOutputMarkupId(true);
         add(form);

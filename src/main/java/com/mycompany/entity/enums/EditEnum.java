@@ -6,5 +6,6 @@ import static java.lang.Boolean.TRUE;
 public enum EditEnum {
     MANAGER_TASK_CREATION,
     MANAGER_TASK_EDIT,
-    EDIT_EMPLOYEE
+    EDIT_EMPLOYEE,
+    EMPLOYEE_TASK_CREATION
 }

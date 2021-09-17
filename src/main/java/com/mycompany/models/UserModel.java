@@ -12,6 +12,7 @@ public class UserModel implements Serializable {
     private String username;
     private String password;
     private Role role;
+    private Boolean hasResume = Boolean.FALSE;
     
 
     public Integer getId() {
@@ -44,6 +45,14 @@ public class UserModel implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getHasResume() {
+        return hasResume;
+    }
+
+    public void setHasResume(Boolean hasResume) {
+        this.hasResume = hasResume;
     }
 
     @Override

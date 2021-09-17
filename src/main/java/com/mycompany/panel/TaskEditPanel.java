@@ -1,5 +1,6 @@
 package com.mycompany.panel;
 
+import com.mycompany.TMWebSession;
 import com.mycompany.entity.enums.EditEnum;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
@@ -95,12 +96,11 @@ public abstract class TaskEditPanel extends Panel {
                 selectedStatus = (TaskStatus) getComponent().getDefaultModelObject();
             }
         });
-
         statusSelect.setOutputMarkupId(true);
+
         if (editEnum == EditEnum.MANAGER_TASK_CREATION) {
             statusSelect.setVisible(false);
         }
-
 
         divContainer.add(statusSelect);
 
@@ -128,6 +128,17 @@ public abstract class TaskEditPanel extends Panel {
         userSelect.setOutputMarkupId(true);
         divContainer.add(userSelect);
 
+        if(editEnum == EditEnum.EDIT_EMPLOYEE) {
+            taskName.setVisible(false);
+            description.setVisible(false);
+            userSelect.setVisible(false);
+        }
+
+        if (editEnum == EditEnum.EMPLOYEE_TASK_CREATION) {
+            statusSelect.setVisible(false);
+            userSelect.setVisible(false);
+        }
+
         AjaxLink<Void> ajaxLink = new AjaxLink<Void>("button") {
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -146,7 +157,7 @@ public abstract class TaskEditPanel extends Panel {
                     taskModel.setStatus(TaskStatus.NEW_TASK);
                     taskModel.setUserModel(selectedUserModel);
                     taskService.save(taskModel);
-                } else {
+                } else if(editEnum == EditEnum.EDIT_EMPLOYEE) {
                     TaskModel taskModel = new TaskModel();
                     taskModel.setId(currentTaskModel.getId());
                     taskModel.setName(taskName.getModelObject());
@@ -154,6 +165,15 @@ public abstract class TaskEditPanel extends Panel {
                     taskModel.setStatus(statusSelect.getModelObject());
                     taskModel.setUserModel(userSelect.getModelObject());
                     taskService.update(taskModel);
+                } else {
+                    TMWebSession session = TMWebSession.get();
+                    TaskModel taskModel = new TaskModel();
+                    taskModel.setId(currentTaskModel.getId());
+                    taskModel.setName(taskName.getModelObject());
+                    taskModel.setDescription(description.getModelObject());
+                    taskModel.setStatus(TaskStatus.NEW_TASK);
+                    taskModel.setUserModel(userService.getUserById(session.getCurrentId()));
+                    taskService.save(taskModel);
                 }
                 onClose(target);
                 refreshManagerPage(target);
