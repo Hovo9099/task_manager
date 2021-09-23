@@ -181,14 +181,15 @@ public class EmployeePage extends WebPage {
                                    for(File fileItem : listFiles) {
                                        fileItem.delete();
                                    }
-                                   userModel = new UserModel();
-                                   userModel.setId(session.getCurrentId());
-                                   userModel.setHasResume(false);
-                                   userService.saveHasResume(userModel);
+//                                   userModel = new UserModel();
+//                                   userModel.setId(session.getCurrentId());
+//                                   userModel.setHasResume(false);
+//                                   userModel.setPdfName(uploadedFile.getClientFileName());
+//                                   userService.saveHasResume(userModel);
                                }
 
                                folder.createNewFile();
-//                      uploadedFile.writeTo(newFile);
+//                             uploadedFile.writeTo(newFile);
                                byte[] bytes = uploadedFile.getBytes();
                                OutputStream os = new FileOutputStream(file);
                                os.write(bytes);
@@ -196,6 +197,7 @@ public class EmployeePage extends WebPage {
                                userModel = new UserModel();
                                userModel.setId(session.getCurrentId());
                                userModel.setHasResume(true);
+                               userModel.setPdfName(uploadedFile.getClientFileName());
                                userService.saveHasResume(userModel);
                            } else {
                                target.appendJavaScript("alert('file is not pdf!')");

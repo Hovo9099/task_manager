@@ -13,6 +13,7 @@ public class UserModel implements Serializable {
     private String password;
     private Role role;
     private Boolean hasResume = Boolean.FALSE;
+    private String pdfName;
     
 
     public Integer getId() {
@@ -53,6 +54,14 @@ public class UserModel implements Serializable {
 
     public void setHasResume(Boolean hasResume) {
         this.hasResume = hasResume;
+    }
+
+    public String getPdfName() {
+        return pdfName;
+    }
+
+    public void setPdfName(String pdfName) {
+        this.pdfName = pdfName;
     }
 
     @Override

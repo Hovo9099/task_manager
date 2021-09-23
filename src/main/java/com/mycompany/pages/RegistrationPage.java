@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,9 +39,11 @@ public class RegistrationPage extends WebPage {
         divContainer.setOutputMarkupId(true);
         username = new TextField<String>("usernameId", Model.of(""));
         username.setOutputMarkupId(true);
+//        username.add(new PatternValidator("^[A-Za-z][A-Za-z0-9_]{7,29}$"));
         divContainer.add(username);
         password = new TextField<String>("passwordId", Model.of(""));
         password.setOutputMarkupId(true);
+//        password.add(new PatternValidator("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"));
         divContainer.add(password);
         listRoles = Arrays.asList(Role.MANAGER, Role.EMPLOYEE);
         selectRole = new DropDownChoice<Role>("roleId", Model.of(Role.EMPLOYEE), listRoles, new IChoiceRenderer<Role>() {

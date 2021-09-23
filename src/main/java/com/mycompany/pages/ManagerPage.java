@@ -30,7 +30,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.apache.wicket.ThreadContext.getApplication;
 
 public class ManagerPage extends WebPage {
 
@@ -60,7 +58,13 @@ public class ManagerPage extends WebPage {
     private UserModel selectedUser;
     private WebMarkupContainer iFrame;
 
+
     public ManagerPage() {
+
+        iFrame = new WebMarkupContainer("iFrame");
+        iFrame.setOutputMarkupPlaceholderTag(true);
+        addOrReplace(iFrame);
+
         listViewContainer = new WebMarkupContainer("listViewContainer");
         listViewContainer.setOutputMarkupPlaceholderTag(true);
         add(listViewContainer);
@@ -170,9 +174,33 @@ public class ManagerPage extends WebPage {
         divContainer.add(logout);
         form.add(divContainer);
 
-        Path path = Paths.get("C:", "data", "2", "application/pdf");
 
-        readDocument(null, path.toString());
+        WebMarkupContainer pdfListViewContainer = new WebMarkupContainer("pdfListViewContainer");
+        pdfListViewContainer.setOutputMarkupId(true);
+        add(pdfListViewContainer);
+
+        ListView<UserModel> pdfListView = new ListView<UserModel>("pdfListView", userService.getUserModels()) {
+            @Override
+            protected void populateItem(ListItem item) {
+
+                UserModel currentUserModel = (UserModel) item.getModelObject();
+                AjaxLink<Void> link = new AjaxLink<Void>("pdfName") {
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        Path path = Paths.get("C:", "data", String.valueOf(currentUserModel.getId()), currentUserModel.getPdfName());
+                        readDocument(target, path.toString(), currentUserModel.getPdfName());
+                    }
+                };
+                link.setOutputMarkupId(true);
+                link.setMarkupId(currentUserModel.getId() + "f");
+                item.add(new Label("user", currentUserModel.getUsername()));
+                item.add(link);
+                link.add(new Label("name", currentUserModel.getPdfName()));
+            }
+        };
+
+        pdfListView.setOutputMarkupId(true);
+        pdfListViewContainer.add(pdfListView);
 
     }
 
@@ -239,10 +267,9 @@ public class ManagerPage extends WebPage {
 
     }
 
-    public void readDocument(AjaxRequestTarget target, String filePath) {
+    public void readDocument(AjaxRequestTarget target, String filePath, String fileName) {
         File headingFile = new File(filePath);
-
-        ResourceReference resourceReference = new ResourceReference(this.getClass(), "pdf-reader-resource") {
+        ResourceReference resourceReference = new ResourceReference(this.getClass(), fileName) {
 
             private static final long serialVersionUID = -6494747414399398897L;
 
@@ -254,8 +281,7 @@ public class ManagerPage extends WebPage {
                     byteArray = Files.readAllBytes(headingFile.toPath());
                 } catch (IOException e) {
                     e.printStackTrace();
-                };
-
+                }
                 return new ByteArrayResource("application/pdf", byteArray);
             }
 
@@ -265,11 +291,9 @@ public class ManagerPage extends WebPage {
             getApplication().getResourceReferenceRegistry().registerResourceReference(resourceReference);
         }
 
-        WebMarkupContainer iFrame = new WebMarkupContainer("iFrame");
-
         String urlForResourceReference = ((String) urlFor(resourceReference, null)).concat("?nocache=" + UUID.randomUUID().toString());
 
         iFrame.add(new AttributeModifier("src", urlForResourceReference) );
-        add(iFrame);
+        target.add(iFrame);
     }
 }

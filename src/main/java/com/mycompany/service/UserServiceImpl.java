@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService, Serializable {
             UserModel userModel = new UserModel();
             userModel.setId(user.getId());
             userModel.setUsername(user.getUsername());
+            userModel.setPdfName(user.getPdfName());
             userModelList.add(userModel);
         }
         return userModelList;
@@ -69,10 +70,13 @@ public class UserServiceImpl implements UserService, Serializable {
         return userModel;
     }
 
+
+
     @Override
     public void saveHasResume(UserModel userModel) {
         User user = userDao.findById(userModel.getId());
         user.setHasResume(userModel.getHasResume());
+        user.setPdfName(userModel.getPdfName());
         userDao.update(user);
     }
 

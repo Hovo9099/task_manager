@@ -15,4 +15,6 @@ public interface UserService {
     UserModel getUserById(Integer id);
 
     void saveHasResume(UserModel userModel);
+
+
 }

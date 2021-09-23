@@ -34,6 +34,9 @@ public class User {
     @Column(name = "has_resume", nullable = false, columnDefinition = "TINYINT", length = 1)
     private Boolean hasResume = Boolean.FALSE;
 
+    @Column(name = "pdf_name", nullable = false)
+    private String pdfName;
+
     public Integer getId() {
         return id;
     }
@@ -72,6 +75,14 @@ public class User {
 
     public void setHasResume(Boolean hasResume) {
         this.hasResume = hasResume;
+    }
+
+    public String getPdfName() {
+        return pdfName;
+    }
+
+    public void setPdfName(String pdfName) {
+        this.pdfName = pdfName;
     }
 
     public List<Task> getTaskList() {

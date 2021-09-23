@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class LoginPage extends WebPage {
 
     private Form form;
     private WebMarkupContainer divContainer;
-    private TextField<Object> usernameTextField;
+    private TextField usernameTextField;
     private PasswordTextField passwordTextField;
     private List<UserModel> userModels;
 
@@ -39,10 +40,11 @@ public class LoginPage extends WebPage {
         add(form);
         divContainer = new WebMarkupContainer("divId");
         divContainer.setOutputMarkupId(true);
-        usernameTextField = new TextField<Object>("usernameId");
+        usernameTextField = new TextField("usernameId");
         usernameTextField.setDefaultModel(Model.of(""));
         usernameTextField.setOutputMarkupId(true);
         usernameTextField.setRequired(true);
+//        usernameTextField.add(new PatternValidator("^[A-Za-z][A-Za-z0-9_]{7,29}$"));
         usernameTextField.add(new AjaxFormComponentUpdatingBehavior("change") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -55,6 +57,7 @@ public class LoginPage extends WebPage {
         passwordTextField.setDefaultModel(Model.of(""));
         passwordTextField.setOutputMarkupId(true);
         passwordTextField.setRequired(true);
+//        passwordTextField.add(new PatternValidator("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"));
         passwordTextField.add(new AjaxFormComponentUpdatingBehavior("change") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
