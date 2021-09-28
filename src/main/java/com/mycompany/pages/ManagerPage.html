@@ -6,19 +6,35 @@
 </head>
     <style>
         .pdfPreview {
-            position: absolute;
+            flex-wrap: wrap;
+            display: flex;
             top: 100px;
-            right: 300px;
             height: 580px;
             width: 520px;
-            display: block;
-            margin-left: 400px;
             margin-right: auto;
-
-
         }
 
-        .taskStyle {
+        div{
+            margin-bottom: 20px;
+        }
+
+
+        h1 {
+            text-align: center;
+        }
+
+        .pdfStyle {
+            flex-wrap: wrap;
+            display: flex;
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+            width: 700px;
+            height: 120px;
+            overflow: auto;
+        }
+
+        .taskListView {
             width: 200px;
             height: 140px;
             border-style: solid;
@@ -27,20 +43,13 @@
             padding-left: 10px;
             padding-top: 20px;
 
-
         }
 
-        .linkStyle {
-            border-style: solid;
-            border-width: 1px;
-            border-color: black;
-            width: 500px;
-            height: 50px;
-            position: relative;
-            display: block;
-            top: -1100px;
-            right: -350px;
+        .list-view-flex-table {
+            flex-wrap: wrap;
+            display: flex;
         }
+
     </style>
 
 <body>
@@ -60,37 +69,33 @@
                 <option>Resolved</option>
                 <option>Done</option>
             </select>
-            <input wicket:id="filterButton" type="submit" value="filter"/>
+            <input wicket:id="filterButton" type="submit" value="filter"/><br/>
             <input wicket:id="createButton" type="submit" value="create task"/>
             <input type="submit" wicket:id="registerButton" value="Register Worker"/>
             <input type="submit" wicket:id="logout" value="Log out"/>
         </div>
     </form>
     <h1>All Tasks</h1>
-    <div wicket:id="listViewContainer">
-        <div wicket:id="listView">
-            <div class="taskStyle">
-                Name : <span wicket:id="name"></span><br/>
-                Description : <span wicket:id="description"></span><br/>
-                Status : <span wicket:id="status"></span><br/>
-                User : <span wicket:id="user"></span><br/><br/>
-                <input wicket:id="editButton" type="button" value="edit"/>
-                <input wicket:id="deleteButton" type="button" value="delete"/>
-                <br/>
+    <div>
+        <div wicket:id="listViewContainer" class="list-view-flex-table">
+            <div class="taskListView" wicket:id="listView">
+                <div>
+                    Name : <span wicket:id="name"></span><br/>
+                    Description : <span wicket:id="description"></span><br/>
+                    Status : <span wicket:id="status"></span><br/>
+                    User : <span wicket:id="user"></span><br/><br/>
+                    <input wicket:id="editButton" type="button" value="edit"/>
+                    <input wicket:id="deleteButton" type="button" value="delete"/>
+                    <br/>
+                </div>
             </div>
         </div>
     </div>
 
-    <div wicket:id="pdfListViewContainer" >
-        <div wicket:id="pdfListView">
-            <div class="linkStyle">
-                <span wicket:id="user"></span>
-                <a wicket:id="pdfName">
-                    <span wicket:id="name"></span>
-                </a>
-            </div>
-        </div>
+    <div class="pdfStyle">
+        <div wicket:id="panelPdfId"></div>
     </div>
+
     <div wicket:id="modalWindow"/>
     <iframe wicket:id="iFrame"  class="pdfPreview" ></iframe>
 </body>

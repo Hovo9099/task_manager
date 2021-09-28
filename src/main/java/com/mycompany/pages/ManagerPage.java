@@ -4,7 +4,9 @@ import com.mycompany.entity.enums.EditEnum;
 import com.mycompany.entity.enums.TaskStatus;
 import com.mycompany.models.TaskModel;
 import com.mycompany.models.UserModel;
+import com.mycompany.panel.TaskDeletePanel;
 import com.mycompany.panel.TaskEditPanel;
+import com.mycompany.panel.TasksPdfViewPanel;
 import com.mycompany.service.TaskService;
 import com.mycompany.service.UserService;
 import org.apache.wicket.AttributeModifier;
@@ -31,8 +33,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +64,8 @@ public class ManagerPage extends WebPage {
         iFrame = new WebMarkupContainer("iFrame");
         iFrame.setOutputMarkupPlaceholderTag(true);
         addOrReplace(iFrame);
+
+        initModalWindow();
 
         listViewContainer = new WebMarkupContainer("listViewContainer");
         listViewContainer.setOutputMarkupPlaceholderTag(true);
@@ -108,7 +110,7 @@ public class ManagerPage extends WebPage {
         });
 
         divContainer.add(taskStatusSelect);
-        initModalWindow();
+
 
 
 
@@ -174,41 +176,49 @@ public class ManagerPage extends WebPage {
         divContainer.add(logout);
         form.add(divContainer);
 
-
-        WebMarkupContainer pdfListViewContainer = new WebMarkupContainer("pdfListViewContainer");
-        pdfListViewContainer.setOutputMarkupId(true);
-        add(pdfListViewContainer);
-
-        ListView<UserModel> pdfListView = new ListView<UserModel>("pdfListView", userService.getUserModels()) {
+        add(new TasksPdfViewPanel("panelPdfId") {
             @Override
-            protected void populateItem(ListItem item) {
+            public void readDocument(AjaxRequestTarget target, String filePath, String fileName) {
+                File headingFile = new File(filePath);
+                ResourceReference resourceReference = new ResourceReference(this.getClass(), fileName) {
 
-                UserModel currentUserModel = (UserModel) item.getModelObject();
-                AjaxLink<Void> link = new AjaxLink<Void>("pdfName") {
+                    private static final long serialVersionUID = -6494747414399398897L;
+
                     @Override
-                    public void onClick(AjaxRequestTarget target) {
-                        Path path = Paths.get("C:", "data", String.valueOf(currentUserModel.getId()), currentUserModel.getPdfName());
-                        readDocument(target, path.toString(), currentUserModel.getPdfName());
-                    }
-                };
-                link.setOutputMarkupId(true);
-                link.setMarkupId(currentUserModel.getId() + "f");
-                item.add(new Label("user", currentUserModel.getUsername()));
-                item.add(link);
-                link.add(new Label("name", currentUserModel.getPdfName()));
-            }
-        };
+                    public IResource getResource() {
 
-        pdfListView.setOutputMarkupId(true);
-        pdfListViewContainer.add(pdfListView);
+                        byte[] byteArray = null;
+                        try {
+                            byteArray = Files.readAllBytes(headingFile.toPath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return new ByteArrayResource("application/pdf", byteArray);
+                    }
+
+                };
+
+                if (resourceReference.canBeRegistered()) {
+                    getApplication().getResourceReferenceRegistry().registerResourceReference(resourceReference);
+                }
+
+                String urlForResourceReference = ((String) urlFor(resourceReference, null)).concat("?nocache=" + UUID.randomUUID().toString());
+
+                iFrame.add(new AttributeModifier("src", urlForResourceReference) );
+                target.add(iFrame);
+            }
+        });
+
+
 
     }
 
     private void initModalWindow() {
         modalWindow = new ModalWindow("modalWindow");
+        modalWindow.setOutputMarkupId(true);
         modalWindow.showUnloadConfirmation(false);
-        modalWindow.setInitialWidth(1100);
-        modalWindow.setInitialHeight(600);
+        modalWindow.setInitialWidth(300);
+        modalWindow.setInitialHeight(100);
         modalWindow.setResizable(true);
         add(modalWindow);
 
@@ -232,8 +242,9 @@ public class ManagerPage extends WebPage {
                         if(!modalWindow.isShown()) {
                             modalWindow.setContent(new TaskEditPanel(modalWindow.getContentId(), currentTaskModel, EditEnum.MANAGER_TASK_EDIT) {
                                 @Override
-                                public void refreshManagerPage(AjaxRequestTarget target) {
-                                    initializeListView(target, taskService.getTaskModelList());
+                                public void refreshManagerPage(AjaxRequestTarget target2) {
+                                    initializeListView(target2, taskService.getTaskModelList());
+                                    modalWindow.close(target2);
                                 }
                             });
                             modalWindow.show(ajaxRequestTarget);
@@ -246,15 +257,31 @@ public class ManagerPage extends WebPage {
                AjaxLink deleteButton = new AjaxLink<Void>("deleteButton") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                      taskService.deleteTask(currentTaskModel.getId());
-                      List<TaskModel> temp = taskService.getTaskModelList();
-                      temp.remove(currentTaskModel);
-                      initializeListView(ajaxRequestTarget, temp);
+
+
+                        if(!modalWindow.isShown()) {
+                            modalWindow.setContent(new TaskDeletePanel(modalWindow.getContentId(), currentTaskModel) {
+                                @Override
+                                public void refreshManagerPage(AjaxRequestTarget target) {
+                                    initializeListView(target, taskService.getTaskModelList());
+                                }
+
+                                @Override
+                                public void onClose( AjaxRequestTarget target) {
+
+                                    modalWindow.close(target);
+
+                                }
+                            });
+
+                            modalWindow.show(ajaxRequestTarget);
+                        }
                     }
                 };
-               deleteButton.setOutputMarkupId(true);
+               deleteButton.setOutputMarkupId(true).setMarkupId("delete_" + index);
                listItem.setOutputMarkupId(true).setMarkupId("row_" + index);
                listItem.add(deleteButton);
+
             }
         };
 
@@ -267,33 +294,5 @@ public class ManagerPage extends WebPage {
 
     }
 
-    public void readDocument(AjaxRequestTarget target, String filePath, String fileName) {
-        File headingFile = new File(filePath);
-        ResourceReference resourceReference = new ResourceReference(this.getClass(), fileName) {
 
-            private static final long serialVersionUID = -6494747414399398897L;
-
-            @Override
-            public IResource getResource() {
-
-                byte[] byteArray = null;
-                try {
-                    byteArray = Files.readAllBytes(headingFile.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return new ByteArrayResource("application/pdf", byteArray);
-            }
-
-        };
-
-        if (resourceReference.canBeRegistered()) {
-            getApplication().getResourceReferenceRegistry().registerResourceReference(resourceReference);
-        }
-
-        String urlForResourceReference = ((String) urlFor(resourceReference, null)).concat("?nocache=" + UUID.randomUUID().toString());
-
-        iFrame.add(new AttributeModifier("src", urlForResourceReference) );
-        target.add(iFrame);
-    }
 }

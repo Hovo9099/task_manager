@@ -57,6 +57,4 @@ public class UserDaoImpl implements UserDao{
         User user = (User) sessionFactory.getCurrentSession().createQuery("from User u where u.username = :username").setParameter("username", username).getSingleResult();
         return user;
     }
-
-
 }

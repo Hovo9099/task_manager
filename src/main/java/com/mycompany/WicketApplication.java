@@ -31,7 +31,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
     protected void init() {
         super.init();
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-        Application.get().getMarkupSettings().setStripWicketTags(true);
+        getSecuritySettings().setAuthorizationStrategy(new AnnotationsRoleAuthorizationStrategy(this));
         mountPages();
 
         getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new IRoleCheckingStrategy() {

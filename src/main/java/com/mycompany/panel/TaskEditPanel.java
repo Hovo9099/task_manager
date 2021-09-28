@@ -18,10 +18,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class TaskEditPanel extends Panel {
+public abstract class TaskEditPanel extends Panel implements Serializable {
 
     @SpringBean
     private TaskService taskService;
@@ -175,7 +176,7 @@ public abstract class TaskEditPanel extends Panel {
                     taskModel.setUserModel(userService.getUserById(session.getCurrentId()));
                     taskService.save(taskModel);
                 }
-                onClose(target);
+
                 refreshManagerPage(target);
             }
         };
@@ -185,12 +186,9 @@ public abstract class TaskEditPanel extends Panel {
     }
 
 
-    private void onClose(IPartialPageRequestHandler target) {
-        modalWindow = new ModalWindow("modalWindow");
-        modalWindow.close(target);
-        add(modalWindow);
-    }
+
 
     public abstract void refreshManagerPage(AjaxRequestTarget target);
+
 
 }

@@ -238,8 +238,10 @@ public class EmployeePage extends WebPage {
                         if(!modalWindow.isShown()) {
                             modalWindow.setContent(new TaskEditPanel(modalWindow.getContentId(), taskModelItem, EditEnum.EDIT_EMPLOYEE) {
                                 @Override
-                                public void refreshManagerPage(AjaxRequestTarget target) {
-                                    initializeListView(target, taskService.getTasksByUser(session.getCurrentUser()));
+                                public void refreshManagerPage(AjaxRequestTarget target2) {
+
+                                    initializeListView(target2, taskService.getTasksByUser(session.getCurrentUser()));
+                                    modalWindow.close(target2);
                                 }
                             });
                             modalWindow.show(target);
